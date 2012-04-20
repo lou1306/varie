@@ -21,6 +21,7 @@
 ##
 ## Il programma controlla il brano attualmente in esecuzione su Virgin Radio e
 ## salva le informazioni (data, ora, titolo, artista) su un file di testo ('songs.txt').
+## Questa versione sfrutta le librerie Twisted (http://twistedmatrix.com/)
 ##
 import urllib
 import re

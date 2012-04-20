@@ -25,8 +25,7 @@
 import urllib
 import re
 import datetime
-from twisted.internet.task import LoopingCall
-from twisted.internet import reactor
+import time
 
 def fetch_song():
     # Inviamo la richiesta
@@ -45,7 +44,10 @@ def fetch_song():
         # Estrazione delle informazioni sulla canzone
         info =  re.search('"title":"(.*)","artist":"(.*)",',now)
         data = info.group(1) + " ### "+ info.group(2)
+        # Maiuscola per la prima lettera di ogni parola
         data = ' '.join(word.capitalize() for word in data.split())
+        #Rimuove le backslah (in "AC\/DC", ad esempio)
+        data =  data.replace('\/', '/')
         # lettura dal file
         try:
             f = open("songs.txt", "r")
@@ -53,10 +55,10 @@ def fetch_song():
             # se songs.txt non esiste, viene creato
             f = open("songs.txt", "w")
             f.close()
-            f = open("songs.txt", "r")        
+            f = open("songs.txt", "r")
         songs = f.readlines()
         f.close()
-        
+
         if len(songs) > 0:
             # prev = ultima canzone salvata
             prev= songs[-1]
@@ -68,8 +70,8 @@ def fetch_song():
             now = datetime.datetime.now()
             f.write(now.strftime("%Y-%m-%d %H:%M")+"\n"+data+"\n")
             f.close()
-            
+
 # La funzione viene eseguita ogni 60 secondi
-lc = LoopingCall(fetch_song)
-lc.start(60)
-reactor.run()
+while(True):
+    fetch_song()
+    time.sleep(60)
